@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hack Illinois Streaming Service</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div class="container" style="padding-top:20px;">
+        <div id="contentWrap">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <video autoplay></video>
+                    <img src="">
+                    <canvas style="display:none;"></canvas>
+
+                    <div style="text-align:center;">
+                      <video id="basic-stream" class="videostream" autoplay=""></video>
+                      <p><button id="capture-button">Capture video</button> <button id="stop-button">Stop</button></p>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    function errorCallback(e) {
+      if (e.code == 1) {
+        alert('User denied access to their camera');
+    } else {
+        alert('getUserMedia() not supported in your browser.');
+    }
+}
+
+(function() {
+     // Create socket connection
+     var socket = io.connect();
+
+     var video = document.querySelector('#basic-stream');
+     var button = document.querySelector('#capture-button');
+     var localMediaStream = null;
+
+     var canvas = document.querySelector('canvas');
+     var ctx = canvas.getContext('2d');
+
+     button.addEventListener('click', function(e) {
+      if (navigator.getUserMedia) {
+        navigator.getUserMedia('video', function(stream) {
+          video.src = stream;
+          video.controls = false;
+          localMediaStream = stream;
+      }, errorCallback);
+    } else if (navigator.webkitGetUserMedia) {
+        navigator.webkitGetUserMedia({video: true}, function(stream) {
+          video.src = window.URL.createObjectURL(stream);
+          video.controls = false;
+          localMediaStream = stream;
+
+          if (localMediaStream) {
+            setInterval ( function(){
+
+              ctx.drawImage(video, 0, 0);
+
+              currentFrame = document.querySelector('img').src = canvas.toDataURL('image/jpeg');
+              console.log(currentFrame);
+              socket.emit('send frame', currentFrame, function (data) {  //Send message
+
+              });
+          }, 33 );
+        }
+    }, errorCallback);
+    } else {
+        errorCallback({target: video});
+    }
+}, false);
+
+     document.querySelector('#stop-button').addEventListener('click', function(e) {
+      video.pause();
+  localMediaStream.stop(); // Doesn't do anything in Chrome.
+}, false);
+ })();
+
+</script>
+</body>
+</html>
