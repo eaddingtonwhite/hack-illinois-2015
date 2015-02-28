@@ -44,37 +44,37 @@
      var socket = io.connect();
 
      //Video to unwrap
-     var video2 = document.querySelector('#basic-stream');
+     var video = document.querySelector('#basic-stream');
      var button = document.querySelector('#capture-button');
      var localMediaStream = null;
 
-     var canvas2 = document.querySelector('canvas');
-     var ctx = canvas2.getContext('2d');
+     var canvas = document.querySelector('canvas');
+     var ctx = canvas.getContext('2d');
 
      button.addEventListener('click', function(e) {
       if (navigator.getUserMedia) {
         navigator.getUserMedia('video', function(stream) {
-          video2.src = stream;
-          video2.controls = false;
+          video.src = stream;
+          video.controls = false;
           localMediaStream = stream;
         }, errorCallback);
       } else if (navigator.webkitGetUserMedia) {
         navigator.webkitGetUserMedia({video: true}, function(stream) {
 
-          video2.src = window.URL.createObjectURL(stream);
+          video.src = window.URL.createObjectURL(stream);
 
-          video2.addEventListener( "canplay", function() {
-            video2.play();
+          video.addEventListener( "canplay", function() {
+            video.play();
 
-            canvas2 = document.createElement( 'canvas' );
-            canvas2.width = 1200;
-            canvas2.height = 800;
+            canvas = document.createElement('canvas');
+            canvas.width = 1200;
+            canvas.height = 800;
 
             // pass video and canvas elements to unwarper
-            var unwarp = new EquiangularUnwarp( video2, canvas2 );
+            var unwarp = new EquiangularUnwarp(video, canvas);
 
             // create a button for stopping / starting the unwarping
-            var button = document.createElement( 'button' );
+            var button = document.createElement('button' );
             button.textContent = "STOP";
             button.addEventListener( 'click', function ( event ) {
               if ( this.textContent == "STOP" ) {
@@ -87,16 +87,16 @@
 
             }, false );
 
-            document.body.appendChild(canvas2);
+            document.body.appendChild(canvas);
 
             document.body.appendChild( button );
             setTimeout(function() {
 
               setInterval ( function(){
 
-                ctx.drawImage(video2, 0, 0);
+                ctx.drawImage(video, 0, 0);
                 //Are we going to send data to socket? EAW
-                // currentFrame = document.querySelector('img').src = canvas2.toDataURL('image/jpeg');
+                // currentFrame = document.querySelector('img').src = canvas.toDataURL('image/jpeg');
                 //console.log(currentFrame);
                 // socket.emit('send frame', currentFrame, function (data) {  //Send message
 
@@ -106,11 +106,6 @@
             // start unwarping video and rendering to canvas
             unwarp.start();
           });
-
-          localMediaStream = stream;
-          if (localMediaStream) {
-
-          }
         }, errorCallback);
       } else {
         errorCallback({target: video});
