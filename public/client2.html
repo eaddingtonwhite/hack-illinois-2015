@@ -9,7 +9,7 @@
 <body>
 
     <div class="container">
-        <canvas id="mainCanvas"></canvas>
+        <img id="mainCanvas"></img>
     </div>
 
     <!-- scripts -->
@@ -18,14 +18,14 @@
         var socket = io.connect();
 
         var mainCanvas =  document.getElementById('mainCanvas');
-        var ctx = mainCanvas.getContext('2d');
+        // var ctx = mainCanvas.getContext('2d');
 
         var image = new Image();
         socket.on('recieve frame', function (data) {
-            image.src = data.imgFrame;
+            document.getElementById('mainCanvas').src = data.imgFrame;
 
             console.log(data.imgFrame);
-            ctx.drawImage(image, 0, 0);
+            // ctx.drawImage(image, 0, 0);
         });
     </script>
 </body>
