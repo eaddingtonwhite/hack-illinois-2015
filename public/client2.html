@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beloit Chat</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <canvas id="mainCanvas"></canvas>
+    </div>
+
+    <!-- scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect();
+
+        var mainCanvas =  document.getElementById('mainCanvas');
+        var ctx = mainCanvas.getContext('2d');
+
+        var image = new Image();
+        socket.on('recieve frame', function (data) {
+            image.src = data.imgFrame;
+
+            console.log(data.imgFrame);
+            ctx.drawImage(image, 0, 0);
+        });
+    </script>
+</body>
