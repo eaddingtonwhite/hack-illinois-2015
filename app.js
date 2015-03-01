@@ -9,7 +9,7 @@ server.listen(9030);
 
 // GET /
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '/public/client1.html');
 });
 
 // GET /client2
