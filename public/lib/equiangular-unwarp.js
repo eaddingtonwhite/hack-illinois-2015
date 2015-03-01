@@ -469,9 +469,9 @@ EquiangularUnwarp = function( warpedVideo, renderCanvas ) {
 		if ( ! stopAnimation ) {
 			requestAnimationFrame( animate );
 
-			// if ( warpedVideo.readyState === warpedVideo.HAVE_ENOUGH_DATA ) {
-			// 	sphereTexture.needsUpdate = true;
-			// }
+			if ( warpedVideo.readyState === warpedVideo.HAVE_ENOUGH_DATA ) {
+				sphereTexture.needsUpdate = true;
+			}
 			updateView();
 			renderer.render( scene, camera );
 		}
